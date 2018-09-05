@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>测试 - 多图片上传 - muilti-upload</title>
+	<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<script src="{{ url_for('static', filename='jquery-2.1.4.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='yupload.js') }}"></script>
+	<br/><br/>
+	<div id="mybox">
+    </div>
+	<div>
+		<ul id="nameList"></ul>
+	</div>
+	<br/>上传进度：<br/><br/>
+	<div class="progress" id="progress">
+	  <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" id="progress-bar" style="width: 0%;">
+	    <span class="sr-only">0% Complete</span>
+	  </div>
+	</div><br/>
+	<input type="button" value="提交" id="upload-button">
+	<br/>
+	<script type="text/javascript">
+		$(function () {
+			var $progress = $('#progress-bar');
+			var $nameList = $('#nameList');
+			var filebox = $('#mybox').yupload({
+				btnText  	: '浏览' ,
+				maxSize 	: 1024*1024*10	,//10M
+				url 		: '/muilti-upload',
+				onSelect	: function(list){
+					var htmlArr = [];
+					for(var i=0,len=list.length,item;i<len;i++){
+						item = list[i];
+						htmlArr.push('<li><span>'+item.size+'</span><span>'+item.name+'</span></li>');
+					}
+					$nameList.html(htmlArr.join(''));
+				},
+				onUpload	: function(p){
+					$progress.width(p+'%').children(".sr-only").text(p+"% Complete");
+				}
+			});
+
+			// Handle the submit button.
+		    $("#upload-button").on("click", function(e) {
+		        filebox.submitUpload();
+		    })
+		});
+    </script>
+</body>
+</html>
